@@ -1,9 +1,12 @@
 use warnings;
 use strict;
 use Text::CSV_XS;
+use POSIX qw/strftime/;
 
 my $transmart_properties_file = 'transmart-data-migration.properties';
 my %properties; 
+my $current_date = strftime('%Y-%m-%d',localtime);
+#print $current_date;die;
 
 #Default value list.
 my $PROVIDER_ID = '@';
