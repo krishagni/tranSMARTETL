@@ -3,7 +3,24 @@ use strict;
 use Text::CSV_XS;
 
 my $transmart_properties_file = 'transmart-data-migration.properties';
-my %properties;
+my %properties; 
+
+#Default value list.
+my $PROVIDER_ID = '@';
+my $START_DATE = '';
+my $MODIFIER_CD = '@';
+my $INSTANCE_NUM = '';
+my $VALUEFLAG_CD = '@';
+my $QUANTITY_NUM = '';
+my $UNITS_CD = '';
+my $END_DATE = 'DATE';
+my $LOCATION_CD = '@';
+my $UPDATE_DATE = 'DATE';
+my $DOWNLOAD_DATE = 'DATE';
+my $IMPORT_DATE = 'DATE';
+my $SOURCESYSTEM_CD = 'OPENSPECIMEN20';
+my $UPLOAD_ID = 1;
+my $SAMPLE_CD = 1;
 
 open my $properties_fh, "<:encoding(utf8)", $transmart_properties_file or die $!;
 map{ $properties{$1}=$2 while m/(.+)=(.+)/g; }<$properties_fh>; close $properties_fh;
@@ -42,10 +59,10 @@ while( $csv2->getline_hr($data_file_fh) ) {
 	push(@observation_fact_values, $data_file_column_values{'StudySubjectID'});
 	my $tm_concept_code = $mapping_file_hash{'HIS_PATHTNMTUM_E8_1_C10'}{$data_file_column_values{'HIS_PATHTNMTUM_E8_1_C10'}};
 	push(@observation_fact_values, $tm_concept_code);
-	push(@observation_fact_values, '@');
-	push(@observation_fact_values, '2015-03-20');
-	push(@observation_fact_values, '@');
-	push(@observation_fact_values, '');
+	push(@observation_fact_values, $PROVIDER_ID);
+	push(@observation_fact_values, $START_DATE);
+	push(@observation_fact_values, $MODIFIER_CD);
+	push(@observation_fact_values, $INSTANCE_NUM);
 	push(@observation_fact_values, $mapping_file_column_values{'TM_COLUMN_TYPE'});
 	if( $mapping_file_column_values{'TM_COLUMN_TYPE'} eq 'T' ) {
 		push(@observation_fact_values, $tm_concept_code);
@@ -54,7 +71,7 @@ while( $csv2->getline_hr($data_file_fh) ) {
 		push(@observation_fact_values, 'E');
 		push(@observation_fact_values, $tm_concept_code);		
 	}
-	push(@observation_fact_values, '@', '', '', '2015-03-20', '@', '', '', '2015-03-20', '2015-03-20', '2015-03-20', 'OPENCLINICA', 1, 1);
+	push(@observation_fact_values, '$VALUEFLAG_CD', '$QUANTITY_NUM', '$UNITS_CD', '$END_DATE', '$LOCATION_CD', '', '', '$UPDATE_DATE', '$DOWNLOAD_DATE', '$IMPORT_DATE', '$SOURCESYSTEM_CD', $UPLOAD_ID, $SAMPLE_CD);
 	$write_observation_fact_csv->print($tm_upload_file_fh, \@observation_fact_values);
 	undef @observation_fact_values;
 	#$mapping_file_column_values{'TM_COLUMN_TYPE'} == 'T' ? push(@observation_fact_values, $tm_concept_code) : push(@observation_fact_values, '');
